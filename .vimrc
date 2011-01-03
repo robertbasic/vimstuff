@@ -27,6 +27,8 @@ set ruler
 
 " line numbers
 set number
+" toggle relative numbers
+noremap ,rn :RN<cr>
 
 set wildmenu
 set wildmode=list:longest
