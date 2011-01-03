@@ -1,5 +1,7 @@
 set nocompatible
 
+let bash_is_sh=1
+
 set guioptions=ac
 
 " edit .vimrc
@@ -82,8 +84,16 @@ autocmd BufEnter * lcd %:p:h
 " shortcut to change to the directory of the file in the current buffer
 nnoremap ,cwd :lcd %:p:h<cr>
 
-set foldenable
-set foldmethod=syntax
+filetype plugin on
+filetype indent on
+runtime! $HOME/.vim/ftdetect/*.vim
+
+autocmd BufNewFile,BufRead *.inc set ft=php
+autocmd BufNewFile,BufRead *.phtml set ft=php
+autocmd BufNewFile,BufRead *.tpl set ft=html
+
+" check with ctrl+l the current file for php syntax errors
+autocmd FileType php noremap <C-l> :!/usr/bin/php -l %<cr>
 
 " NERDTree settings
 nmap <F7> :NERDTreeToggle<CR>
