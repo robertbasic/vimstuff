@@ -96,6 +96,8 @@ autocmd BufNewFile,BufRead *.tpl set ft=html
 
 " check with ctrl+l the current file for php syntax errors
 autocmd FileType php noremap <C-l> :!/usr/bin/php -l %<cr>
+" highlight php variables
+autocmd FileType php CursorMoved * silent! exe printf('match IncSearch /$\<%s\>/', expand('<cword>'))
 
 " NERDTree settings
 nmap <F7> :NERDTreeToggle<CR>
