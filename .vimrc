@@ -1,8 +1,11 @@
 set nocompatible
 
+set encoding=utf-8
+
 let bash_is_sh=1
 
-set guioptions=ac
+"set guioptions=ac
+set guioptions=em
 
 " edit .vimrc
 nmap <silent> ,ev :e $MYVIMRC<cr>
@@ -19,25 +22,24 @@ set expandtab
 set softtabstop=4
 
 syntax on
-colorscheme torte
+colorscheme desert
 
 set autoindent
 
 set ruler
 
-" line numbers
-set number
-" toggle relative numbers
-noremap ,rn :RN<cr>
+set clipboard=unnamed
 
+" show line numbers
+set number
+
+" helps with <Tab> completing file names
 set wildmenu
 set wildmode=list:longest
 
-" a few remaps
+" custom remaps
 map! jj <ESC>
-nnoremap :W<cr> :w<cr>
-nnoremap <tab><tab> %
-vnoremap <tab><tab> %
+map! :W<cr> :w<cr>
 
 " search setup
 set ignorecase
@@ -45,11 +47,8 @@ set smartcase
 set incsearch
 set showmatch
 set hlsearch
-set incsearch
 " shortcut to clear the search buffer
 nnoremap ,<space> :noh<cr>
-
-set encoding=utf-8
 
 set hidden
 
@@ -63,8 +62,7 @@ set laststatus=2
 " hide the mouse when typing
 set mousehide
 
-" timeout between key combinations, like jj
-set timeoutlen=500
+" timeout between key combinations, likeet timeoutlen=500
 
 set history=100
 
@@ -88,6 +86,7 @@ nnoremap ,cwd :lcd %:p:h<cr>
 
 filetype plugin on
 filetype indent on
+
 runtime! $HOME/.vim/ftdetect/*.vim
 
 autocmd BufNewFile,BufRead *.inc set ft=php
@@ -96,9 +95,9 @@ autocmd BufNewFile,BufRead *.tpl set ft=html
 
 " check with ctrl+l the current file for php syntax errors
 autocmd FileType php noremap <C-l> :!/usr/bin/php -l %<cr>
-" highlight php variables
-autocmd FileType php CursorMoved * silent! exe printf('match IncSearch /$\<%s\>/', expand('<cword>'))
 
 " NERDTree settings
-nmap <F7> :NERDTreeToggle<CR>
-nmap ,fb :NERDTreeToggle<cr>
+nmap <silent> <c-n> :NERDTreeToggle<CR>
+
+" vim-xdebug settings
+nmap <silent> <c-b> :Bp<CR>
