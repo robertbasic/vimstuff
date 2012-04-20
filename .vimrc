@@ -24,7 +24,7 @@ set softtabstop=4
 syntax on
 colorscheme desert
 
-set autoindent
+set cindent
 
 set ruler
 
