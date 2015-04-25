@@ -18,6 +18,14 @@ Plugin 'takac/vim-hardtime'
 
 Plugin 'airblade/vim-rooter'
 
+Plugin 'vimwiki/vimwiki'
+
+Plugin 'vim-scripts/PreserveNoEOL'
+
+Plugin 'michaeljsmith/vim-indent-object'
+
+Plugin '2072/PHP-Indenting-for-VIm'
+
 call vundle#end()
 
 filetype plugin indent on
@@ -143,11 +151,6 @@ vmap <leader>k <Plug>(easymotion-k)
 nmap <leader>s <Plug>(easymotion-s)
 vmap <leader>s <Plug>(easymotion-s)
 
-" or
-" `s{char}{char}{label}`
-" Need one more keystroke, but on average, it may be more comfortable.
-" nmap <leader>ww <Plug>(easymotion-s2)
-
 " Turn on case insensitive feature
 let g:EasyMotion_smartcase = 1
 
@@ -155,15 +158,41 @@ let g:hardtime_default_on = 1
 let g:hardtime_allow_different_key = 1
 let g:hardtime_maxcount=2
 
-"map <tab> :Bufstop<cr>
 map <tab> :CtrlPBuffer<cr>
 "unlet g:ctrlp_custom_ignore
-let g:ctrlp_custom_ignore = 'vendor\|tests\/log\|git\|env\|__pycache__'
-
-source ~/.vim/List.vim
+let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build\|__pycache__\|docs'
 
 augroup CursorLine
     au!
-    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     au WinLeave * setlocal nocursorline
+    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
 augroup End
+
+nmap <leader>cl dd:pu<CR>
+
+" indent paragraph
+map <leader>ip vip><CR>
+" outdent paragraph
+map <leader>op vip<<CR>
+" indent curly braces
+map <leader>ic vi{><CR>
+" outdent curly braces
+map <leader>oc vi{<<CR>
+" fix indent in curly braces
+map <leader>fic vi{=<CR>
+
+" delete to null register (zap it!)
+noremap z "_d
+noremap Z "_D
+
+map <leader>wos :VimwikiIndex<cr> :VimwikiGoto Scrap<cr>
+
+" since installing vim-indent-object
+" PHP block comments got broken
+" this whatever is fixes it
+au FileType php setlocal comments=s1:/*,mb:*,ex:*/,://,:#
+au FileType php setlocal formatoptions+=cro
+
+map <leader>fpc :setlocal comments=s1:/*,mb:*,ex:*/,://,:#<cr>:setlocal formatoptions+=cro<cr>
+
+let g:rooter_silent_chdir=1
