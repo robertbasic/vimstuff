@@ -160,7 +160,7 @@ let g:hardtime_maxcount=2
 
 map <tab> :CtrlPBuffer<cr>
 "unlet g:ctrlp_custom_ignore
-let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build\|__pycache__\|docs'
+let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build\|__pycache__\|docs|*.pyc'
 
 augroup CursorLine
     au!
@@ -182,8 +182,8 @@ map <leader>oc vi{<<CR>
 map <leader>fic vi{=<CR>
 
 " delete to null register (zap it!)
-noremap z "_d
-noremap Z "_D
+"noremap z "_d
+"noremap Z "_D
 
 map <leader>wos :VimwikiIndex<cr> :VimwikiGoto Scrap<cr>
 
@@ -196,3 +196,12 @@ au FileType php setlocal formatoptions+=cro
 map <leader>fpc :setlocal comments=s1:/*,mb:*,ex:*/,://,:#<cr>:setlocal formatoptions+=cro<cr>
 
 let g:rooter_silent_chdir=1
+
+" take
+" a_very_long_line(with_parenthesis)
+" and turn it into
+" a_very_long_line(
+"     with_parenthesis
+" )
+" useful for python long lines
+map <leader>l79 ^f(a<cr><esc><<$i<cr><esc><<
