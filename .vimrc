@@ -26,6 +26,14 @@ Plugin 'michaeljsmith/vim-indent-object'
 
 Plugin '2072/PHP-Indenting-for-VIm'
 
+Plugin 'SirVer/ultisnips'
+
+Plugin 'honza/vim-snippets'
+
+Plugin 'itchyny/lightline.vim'
+
+Plugin 'majutsushi/tagbar'
+
 call vundle#end()
 
 filetype plugin indent on
@@ -84,7 +92,7 @@ nnoremap ,<space> :noh<cr>
 set hidden
 
 " looks of the status line
-set stl=%F\ %m\ %r\ Line:\ %l/%L[%p%%]\ Col:\ %c\ Buf:\ #%n\ [%b][0x%B]
+" set stl=%F\ %m\ %r\ Line:\ %l/%L[%p%%]\ Col:\ %c\ Buf:\ #%n\ [%b][0x%B]
 
 set laststatus=2
 
@@ -171,15 +179,15 @@ augroup End
 nmap <leader>cl dd:pu<CR>
 
 " indent paragraph
-map <leader>ip vip><CR>
+map <leader>ip vip><CR>k
 " outdent paragraph
-map <leader>op vip<<CR>
+map <leader>op vip<<CR>k
 " indent curly braces
-map <leader>ic vi{><CR>
+map <leader>ic vi{><CR>k
 " outdent curly braces
-map <leader>oc vi{<<CR>
+map <leader>oc vi{<<CR>k
 " fix indent in curly braces
-map <leader>fic vi{=<CR>
+map <leader>fic vi{=<CR>k
 
 " delete to null register (zap it!)
 "noremap z "_d
@@ -205,3 +213,23 @@ let g:rooter_silent_chdir=1
 " )
 " useful for python long lines
 map <leader>l79 ^f(a<cr><esc><<$i<cr><esc><<
+
+let g:UltiSnipsExpandTrigger="<tab>"
+
+nmap <F8> :TagbarToggle<CR>
+
+let g:lightline = {
+    \ 'colorscheme': 'wombat',
+    \ 'active': {
+    \   'left': [['mode'], ['readonly', 'filename', 'modified'], ['tagbar']],
+    \   'right': [['lineinfo'], ['filetype']]
+    \ },
+    \ 'inactive': {
+    \   'left': [['absolutepath']],
+    \   'right': [['lineinfo'], ['filetype']]
+    \ },
+    \ 'component': {
+    \   'lineinfo': '%l\%L [%p%%], %c, %n',
+    \   'tagbar': '%{tagbar#currenttag("[%s]", "", "f")}',
+    \ },
+    \ }
