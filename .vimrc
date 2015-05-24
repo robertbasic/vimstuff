@@ -168,7 +168,7 @@ let g:hardtime_maxcount=2
 
 map <tab> :CtrlPBuffer<cr>
 "unlet g:ctrlp_custom_ignore
-let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build\|__pycache__\|docs|*.pyc'
+let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build/\|dist/\|__pycache__\|docs|*.pyc'
 
 augroup CursorLine
     au!
