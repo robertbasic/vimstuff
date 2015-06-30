@@ -189,6 +189,10 @@ map <leader>oc vi{<<CR>k
 " fix indent in curly braces
 map <leader>fic vi{=<CR>k
 
+" yank current php method
+map <leader>ycm ?<space>function<space><CR>Vj%y<CR>:noh<CR>
+
+
 " delete to null register (zap it!)
 "noremap z "_d
 "noremap Z "_D
