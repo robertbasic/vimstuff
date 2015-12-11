@@ -8,7 +8,7 @@ Plugin 'gmarik/Vundle.vim'
 
 Plugin 'scrooloose/nerdtree'
 
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 Plugin 'Lokaltog/vim-easymotion'
 
@@ -34,6 +34,14 @@ Plugin 'itchyny/lightline.vim'
 
 Plugin 'majutsushi/tagbar'
 
+Plugin 'vim-php/tagbar-phpctags.vim'
+
+Plugin 'rstacruz/vim-closer'
+
+Plugin 'sickill/vim-pasta'
+
+Plugin 'ludovicchabant/vim-gutentags'
+
 call vundle#end()
 
 filetype plugin indent on
@@ -47,7 +55,7 @@ set guioptions=em
 " edit .vimrc
 nmap <silent> ,ev :e $MYVIMRC<cr>
 " source .vimrc
-nmap <silent> ,sv :so $MYVIMRC<CR>
+nmap <silent> ,sv :so $MYVIMRC<cr>
 
 set showmode
 set showcmd
@@ -164,11 +172,14 @@ let g:EasyMotion_smartcase = 1
 
 let g:hardtime_default_on = 1
 let g:hardtime_allow_different_key = 1
-let g:hardtime_maxcount=2
+let g:hardtime_maxcount=3
 
 map <tab> :CtrlPBuffer<cr>
+map <leader>tb :CtrlPBufTag<cr>
+map <leader>ta :CtrlPTag<cr>
+map <leader>jd :CtrlPTag<cr><C-\>w
 "unlet g:ctrlp_custom_ignore
-let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build/\|dist/\|__pycache__\|docs|*.pyc'
+let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build/\|dist/\|__pycache__\|docs\/build/\|public_html\/api/\|public_html\/docs/\|*.pyc'
 
 augroup CursorLine
     au!
@@ -188,10 +199,16 @@ map <leader>ic vi{><CR>k
 map <leader>oc vi{<<CR>k
 " fix indent in curly braces
 map <leader>fic vi{=<CR>k
+" fix indent in square brackets
+map <leader>fis vi[j=<CR>k
 
 " yank current php method
 map <leader>ycm ?<space>function<space><CR>Vj%y<CR>:noh<CR>
+" move to next php method
+map <leader>npm /<space>function<space><CR>2w:noh<CR>
 
+" wrap current line in <p></p> (for blog posts)
+map <leader>pwp O<p><ESC>2ji</p><CR><ESC>
 
 " delete to null register (zap it!)
 "noremap z "_d
@@ -223,9 +240,8 @@ let g:UltiSnipsExpandTrigger="<tab>"
 nmap <F8> :TagbarToggle<CR>
 
 let g:lightline = {
-    \ 'colorscheme': 'wombat',
     \ 'active': {
-    \   'left': [['mode'], ['readonly', 'filename', 'modified'], ['tagbar']],
+    \   'left': [['mode'], ['readonly', 'filename', 'modified'], ['tagbar', 'gutentags']],
     \   'right': [['lineinfo'], ['filetype']]
     \ },
     \ 'inactive': {
@@ -235,5 +251,23 @@ let g:lightline = {
     \ 'component': {
     \   'lineinfo': '%l\%L [%p%%], %c, %n',
     \   'tagbar': '%{tagbar#currenttag("[%s]", "", "f")}',
+    \   'gutentags': '%{gutentags#statusline("[Generating...]")}',
     \ },
     \ }
+
+function! OpenTestFile()
+    let b:file = expand("%:p:r")
+    let b:root_dir = getbufvar('%', 'rootDir')
+    let b:tests_dir = b:root_dir . "/tests"
+    let b:test_file = substitute(b:file, b:root_dir, b:tests_dir, "") . "Test.php"
+    exe ":vsp " b:test_file
+endfun
+
+map <leader>otf :call OpenTestFile()<cr>
+
+map <leader>ihf :set ft=html<cr>ggVG=<cr>:set ft=php<cr>
+
+let g:gutentags_exclude = ['*.css', '*.html', '*.js']
+let g:gutentags_cache_dir = '~/.vim/gutentags'
+
+let g:tagbar_phpctags_bin='~/.vim/phpctags'
