@@ -4,7 +4,7 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'scrooloose/nerdtree'
 
@@ -26,21 +26,15 @@ Plugin 'michaeljsmith/vim-indent-object'
 
 Plugin '2072/PHP-Indenting-for-VIm'
 
-Plugin 'SirVer/ultisnips'
-
-Plugin 'honza/vim-snippets'
-
 Plugin 'itchyny/lightline.vim'
 
 Plugin 'majutsushi/tagbar'
 
 Plugin 'vim-php/tagbar-phpctags.vim'
 
-Plugin 'rstacruz/vim-closer'
-
-Plugin 'sickill/vim-pasta'
-
 Plugin 'ludovicchabant/vim-gutentags'
+
+Plugin 'arnaud-lb/vim-php-namespace'
 
 call vundle#end()
 
@@ -154,12 +148,6 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " Bi-directional find motion
 " Jump to anywhere you want with minimal keystrokes, with just one key binding.
 " `s{char}{label}`
-nmap <leader>w <Plug>(easymotion-w)
-vmap <leader>w <Plug>(easymotion-w)
-nmap <leader>e <Plug>(easymotion-e)
-vmap <leader>e <Plug>(easymotion-e)
-nmap <leader>b <Plug>(easymotion-b)
-vmap <leader>b <Plug>(easymotion-b)
 nmap <leader>j <Plug>(easymotion-j)
 vmap <leader>j <Plug>(easymotion-j)
 nmap <leader>k <Plug>(easymotion-k)
@@ -235,8 +223,6 @@ let g:rooter_silent_chdir=1
 " useful for python long lines
 map <leader>l79 ^f(a<cr><esc><<$i<cr><esc><<
 
-let g:UltiSnipsExpandTrigger="<tab>"
-
 nmap <F8> :TagbarToggle<CR>
 
 let g:lightline = {
@@ -271,3 +257,5 @@ let g:gutentags_exclude = ['*.css', '*.html', '*.js']
 let g:gutentags_cache_dir = '~/.vim/gutentags'
 
 let g:tagbar_phpctags_bin='~/.vim/phpctags'
+
+autocmd FileType php noremap <Leader>u :call PhpInsertUse()<cr>
