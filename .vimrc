@@ -34,8 +34,6 @@ Plugin 'vim-php/tagbar-phpctags.vim'
 
 Plugin 'ludovicchabant/vim-gutentags'
 
-Plugin 'arnaud-lb/vim-php-namespace'
-
 call vundle#end()
 
 filetype plugin indent on
@@ -258,4 +256,12 @@ let g:gutentags_cache_dir = '~/.vim/gutentags'
 
 let g:tagbar_phpctags_bin='~/.vim/phpctags'
 
-autocmd FileType php noremap <Leader>u :call PhpInsertUse()<cr>
+nnoremap <expr> n 'Nn'[v:searchforward]
+nnoremap <expr> N 'nN'[v:searchforward]
+
+function! CopyPasteMethodBody(from_line, to_line)
+    execute a:from_line
+    normal! yiB
+    execute a:to_line
+    normal! p
+endfun
