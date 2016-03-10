@@ -64,6 +64,10 @@ set showmode
 set showcmd
 " Remember the last 100 commands on the command-line
 set history=100
+" Hide buffers instead of unloading them
+" If we unload a buffer it means it's local history/undo stack
+" will be gone if we switch buffers
+set hidden
 
 " Tab settings
 " One tab is 4 space
