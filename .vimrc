@@ -1,4 +1,5 @@
 set nocompatible
+filetype off
 
 " Using vim-plug for plugins https://github.com/junegunn/vim-plug
 
@@ -9,6 +10,8 @@ Plug 'VundleVim/Vundle.vim'
 Plug 'scrooloose/nerdtree'
 
 Plug 'ctrlpvim/ctrlp.vim'
+
+Plug 'FelikZ/ctrlp-py-matcher'
 
 Plug 'easymotion/vim-easymotion'
 
@@ -32,12 +35,27 @@ Plug 'vim-php/tagbar-phpctags.vim'
 
 Plug 'ludovicchabant/vim-gutentags'
 
+Plug 'tpope/vim-surround'
+
+Plug 'sirver/ultisnips'
+
+Plug 'pearofducks/ansible-vim'
+
+Plug '~/.vim/bundle/vim-syntax-for-phtml'
+
+Plug '~/projects/vim-hugo-helper'
+
+Plug 'junkblocker/patchreview-vim'
+
+Plug '~/projects/vim-githubprreview'
+
 call plug#end()
 
 " Enable filetype indentation
 filetype plugin indent on
 " Do smart autoindenting
 set smartindent
+set autoindent
 
 " Use UTF-8 encoding
 set encoding=utf-8
@@ -84,11 +102,12 @@ set softtabstop=4
 " Turn on syntax highlightning
 syntax on
 colorscheme desert
+set background=dark
 
 " Turn on command-line completion
 set wildmenu
 " List all matches and complete till longest common string
-set wildmode=list:longest
+set wildmode=full
 
 " Always have a status line
 set laststatus=2
@@ -178,9 +197,16 @@ map <tab> :CtrlPBuffer<cr>
 map <leader>tb :CtrlPBufTag<cr>
 map <leader>ta :CtrlPTag<cr>
 " Jump to definition
-map <leader>jd :CtrlPTag<cr><C-\>w
+map <silent> <leader>jd :CtrlPTag<cr><C-\>w
 " Things to ignore with CtrlP
-let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build/\|dist/\|__pycache__\|docs\/build/\|public_html\/api/\|public_html\/docs/\|*.pyc'
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g "" '
+" uses ~/.agignore
+"let g:ctrlp_custom_ignore = 'vendor/\|tests\/log\|git\|env\|build/\|dist/\|__pycache__\|docs\/build/\|public_html\/api/\|public_html\/docs/\|*.pyc'
+let g:ctrlp_match_current_file = 1
+let g:ctrlp_lazy_update = 1
+let g:ctrlp_extensions = ['tag', 'buffertag']
+let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+let g:ctrlp_use_caching = 0
 " ==== End CtrlP settings ====
 "
 " ==== Easymotion settings ====
@@ -241,11 +267,16 @@ let g:lightline = {
     \ }
 " ==== End lightline settings ====
 "
+" ==== UltiSnips settings ====
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
+" ==== End UltiSnips settings ====
+"
 " ==== End plugin settings ====
 
 " ==== Automatic ====
 " Automatically change cwd to the directory of the file in the current buffer
-autocmd BufEnter * lcd %:p:h
+autocmd BufEnter * silent! lcd %:p:h
 
 " Set file types for some of the PHP related extensions
 autocmd BufNewFile,BufRead *.inc set ft=php
@@ -260,6 +291,10 @@ autocmd BufNewFile,BufRead *.tpl set ft=phtml
 " au FileType php setlocal comments=s1:/*,mb:*,ex:*/,://,:#
 " au FileType php setlocal formatoptions+=cro
 
+autocmd BufNewFile,BufRead *.xsd set ft=xml
+let g:xml_syntax_folding=1
+au FileType xml setlocal foldmethod=syntax
+
 " ==== End automatic ====
 
 " ==== Custom functions ====
@@ -273,6 +308,19 @@ function! OpenTestFile()
     let b:root_dir = getbufvar('%', 'rootDir')
     let b:tests_dir = b:root_dir . "/tests"
     let b:test_file = substitute(b:file, b:root_dir, b:tests_dir, "") . "Test.php"
+    exe ":vsp " b:test_file
+endfun
+
+function! OpenTestMethodFile()
+    let b:file = expand("%:p:r")
+    let b:root_dir = getbufvar('%', 'rootDir')
+    let b:tests_dir = b:root_dir . "/tests"
+    let b:class_test_dir = substitute(b:file, b:root_dir, b:tests_dir, "")
+    let b:current_method = substitute(tagbar#currenttag('%s',''), '\(^.\)', '\u&', 'g')
+    if !isdirectory(b:class_test_dir)
+        call mkdir(b:class_test_dir, 'p')
+    endif
+    let b:test_file = b:class_test_dir . "/" . b:current_method . "Test.php"
     exe ":vsp " b:test_file
 endfun
 
@@ -312,5 +360,6 @@ noremap <leader>fi[ vi[j=<cr>k
 
 " Call OpenTestFile() custom function
 nnoremap <leader>otf :call OpenTestFile()<cr>
+nnoremap <leader>otmf :call OpenTestMethodFile()<cr>
 
 " ==== End remappings ====
