@@ -39,7 +39,13 @@ Plug 'tpope/vim-surround'
 
 Plug 'sirver/ultisnips'
 
+Plug 'sniphpets/sniphpets'
+
+Plug 'sniphpets/sniphpets-common'
+
 Plug 'pearofducks/ansible-vim'
+
+Plug 'ddrscott/vim-side-search'
 
 Plug '~/.vim/bundle/vim-syntax-for-phtml'
 
@@ -269,9 +275,16 @@ let g:lightline = {
 "
 " ==== UltiSnips settings ====
 let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/sniphpets-common/UltiSnips', $HOME.'/.vim/bundle/sniphpets']
 " ==== End UltiSnips settings ====
 "
+" ==== vim side search settings ====
+let g:side_search_prg = 'ag --word-regexp --heading --stats -B 1 -A 4'
+let g:side_search_splitter = 'vnew'
+let g:side_search_split_pct = 0.4
+nnoremap <leader>gw :SideSearch <C-r><C-w><CR> | wincmd p
+cabbrev SS SideSearch
+
 " ==== End plugin settings ====
 
 " ==== Automatic ====
@@ -341,9 +354,9 @@ endfun
 
 " ==== Remappings ====
 " edit .vimrc
-nmap <silent> <leader>ev :e $MYVIMRC<cr>
+nmap <silent> <leader>vev :e $MYVIMRC<cr>
 " source .vimrc
-nmap <silent> <leader>sv :so $MYVIMRC<cr>
+nmap <silent> <leader>vsv :so $MYVIMRC<cr>
 
 " check with ctrl+l the current file for php syntax errors
 autocmd FileType php noremap <C-l> :!/usr/bin/php -l %<cr>
