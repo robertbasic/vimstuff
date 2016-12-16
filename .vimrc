@@ -33,6 +33,8 @@ Plug 'majutsushi/tagbar'
 
 Plug 'vim-php/tagbar-phpctags.vim'
 
+Plug 'arnaud-lb/vim-php-namespace'
+
 Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'tpope/vim-surround'
@@ -50,10 +52,6 @@ Plug 'ddrscott/vim-side-search'
 Plug '~/.vim/bundle/vim-syntax-for-phtml'
 
 Plug '~/projects/vim-hugo-helper'
-
-Plug 'junkblocker/patchreview-vim'
-
-Plug '~/projects/vim-githubprreview'
 
 call plug#end()
 
@@ -279,11 +277,28 @@ let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/
 " ==== End UltiSnips settings ====
 "
 " ==== vim side search settings ====
-let g:side_search_prg = 'ag --word-regexp --heading --stats -B 1 -A 4'
+let g:side_search_prg = 'ag --word-regexp --heading --stats -B 1 -A 4 --ignore="*.js"'
 let g:side_search_splitter = 'vnew'
-let g:side_search_split_pct = 0.4
+let g:side_search_split_pct = 0.5
 nnoremap <leader>gw :SideSearch <C-r><C-w><CR> | wincmd p
 cabbrev SS SideSearch
+" ==== End vim side search settings ====
+"
+" ==== vim-php-namespace settings ====
+function! IPhpInsertUse()
+    call PhpInsertUse()
+    call feedkeys('a',  'n')
+endfunction
+autocmd FileType php inoremap <Leader>pnu <Esc>:call IPhpInsertUse()<CR>
+autocmd FileType php noremap <Leader>pnu :call PhpInsertUse()<CR>
+function! IPhpExpandClass()
+    call PhpExpandClass()
+    call feedkeys('a', 'n')
+endfunction
+autocmd FileType php inoremap <Leader>pne <Esc>:call IPhpExpandClass()<CR>
+autocmd FileType php noremap <Leader>pne :call PhpExpandClass()<CR>
+autocmd FileType php inoremap <Leader>pns <Esc>:call PhpSortUse()<CR>
+autocmd FileType php noremap <Leader>pns :call PhpSortUse()<CR>
 
 " ==== End plugin settings ====
 
