@@ -390,4 +390,7 @@ noremap <leader>fi[ vi[j=<cr>k
 nnoremap <leader>otf :call OpenTestFile()<cr>
 nnoremap <leader>otmf :call OpenTestMethodFile()<cr>
 
+" Highlight word under cursor
+nnoremap <silent> <Leader>* :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
+
 " ==== End remappings ====
