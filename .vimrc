@@ -1,6 +1,10 @@
 set nocompatible
 filetype off
 
+" Force loading python3
+if has('python3')
+endif
+
 " Using vim-plug for plugins https://github.com/junegunn/vim-plug
 
 call plug#begin("~/.vim/bundle")
@@ -49,9 +53,15 @@ Plug 'pearofducks/ansible-vim'
 
 Plug 'ddrscott/vim-side-search'
 
+Plug 'wellle/targets.vim'
+
 Plug '~/.vim/bundle/vim-syntax-for-phtml'
 
-Plug '~/projects/vim-hugo-helper'
+Plug 'robertbasic/vim-argument-swapper'
+
+Plug 'robertbasic/vim-pyqt5-importer'
+
+Plug 'robertbasic/vim-hugo-helper'
 
 call plug#end()
 
@@ -188,6 +198,13 @@ nnoremap <expr> N 'nN'[v:searchforward]
 " set selection=old
 
 " ==== Plugins settings ====
+" ==== VIM PyQt5 Importer settings ====
+map <leader>pi :PyQt5ImportClass<cr>
+" ==== End VIM PyQt5 Importer settings ====
+"
+" ==== VIM Argument Swapper settings ====
+map <leader>as :ArgumentSwapperSwap<cr>
+" ==== End VIM Argument Swapper settings ====
 "
 " ==== NERDTree settings ====
 nnoremap <silent> <c-n> :NERDTreeToggle<CR>
@@ -224,7 +241,7 @@ vmap <leader>s <Plug>(easymotion-s)
 "
 " ==== hardtime settings ====
 " Turn on hardtime
-let g:hardtime_default_on = 1
+let g:hardtime_default_on = 0
 " Allow different movement key
 let g:hardtime_allow_different_key = 1
 " Max 3 of the same movement allowed at a time
@@ -323,6 +340,7 @@ autocmd BufNewFile,BufRead *.xsd set ft=xml
 let g:xml_syntax_folding=1
 au FileType xml setlocal foldmethod=syntax
 
+au BufRead,BufNewFile *.twig set syntax=html
 " ==== End automatic ====
 
 " ==== Custom functions ====
@@ -365,6 +383,10 @@ function! IndentHtmlFile()
     set ft=php
 endfun
 
+function! SectionLink()
+    exe "normal! ^wi[\elv$hyA](#)\ePvibu"
+endfun
+
 " ==== End custom functions ====
 
 " ==== Remappings ====
@@ -393,4 +415,6 @@ nnoremap <leader>otmf :call OpenTestMethodFile()<cr>
 " Highlight word under cursor
 nnoremap <silent> <Leader>* :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
 
+" Swap current and next variable
+nnoremap <silent> <Leader>vs 2wdw2bPa, <ESC>2wx
 " ==== End remappings ====
