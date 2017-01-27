@@ -387,6 +387,15 @@ function! SectionLink()
     exe "normal! ^wi[\elv$hyA](#)\ePvibu"
 endfun
 
+function! CreateNamespace()
+    let b:file = expand("%:p:h")
+    let b:root_dir = getbufvar('%', 'rootDir')
+    let b:class = substitute(b:file, b:root_dir . '/src', '', "")
+    let b:namespace = substitute(b:class, '/', '\\', 'g')
+    let b:namespace = substitute(b:namespace, '\\', '', '')
+    exe "normal! Inamespace " . b:namespace . ";"
+endfun
+
 " ==== End custom functions ====
 
 " ==== Remappings ====
