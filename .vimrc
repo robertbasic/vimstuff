@@ -41,6 +41,10 @@ Plug 'arnaud-lb/vim-php-namespace'
 
 Plug 'ludovicchabant/vim-gutentags'
 
+Plug 'w0rp/ale'
+
+Plug 'php-vim/phpcd.vim', { 'for': 'php' , 'do': 'composer update' }
+
 Plug 'tpope/vim-surround'
 
 Plug 'sirver/ultisnips'
@@ -62,6 +66,10 @@ Plug 'robertbasic/vim-argument-swapper'
 Plug 'robertbasic/vim-pyqt5-importer'
 
 Plug 'robertbasic/vim-hugo-helper'
+
+Plug 'phpstan/vim-phpstan'
+
+Plug '~/projects/vim-functions'
 
 call plug#end()
 
@@ -250,6 +258,7 @@ let g:hardtime_maxcount = 3
 "
 " ==== rooter settings ====
 let g:rooter_silent_chdir=1
+let g:rooter_patterns = ['composer.json', 'Vagrantfile', '.git/']
 " ==== End rooter settings ====
 "
 " ==== PreserveNoEOL settings ====
@@ -265,15 +274,24 @@ let g:tagbar_phpctags_bin='~/.vim/phpctags'
 "
 " ==== gutentags settings ====
 " Exclude css, html, js files from generating tag files
-let g:gutentags_exclude = ['*.css', '*.html', '*.js']
+let g:gutentags_exclude = ['*.css', '*.html', '*.js', '*.json', '*.xml',
+                            \ '*.phar', '*.ini', '*.rst', '*.md',
+                            \ '*vendor/*/test*', '*vendor/*/Test*',
+                            \ '*vendor/*/fixture*', '*vendor/*/Fixture*',
+                            \ '*var/cache*', '*var/log*']
 " Where to store tag files
 let g:gutentags_cache_dir = '~/.vim/gutentags'
 " ==== End gutentags settings ====
 "
+let g:ale_linters = {
+\   'php': ['php'],
+\}
+let g:ale_lint_on_save = 1
+let g:ale_lint_on_text_changed = 0
 " ==== lightline settings ====
 let g:lightline = {
     \ 'active': {
-    \   'left': [['mode'], ['readonly', 'filename', 'modified'], ['tagbar', 'gutentags']],
+    \   'left': [['mode'], ['readonly', 'filename', 'modified'], ['tagbar', 'ale', 'gutentags']],
     \   'right': [['lineinfo'], ['filetype']]
     \ },
     \ 'inactive': {
@@ -283,7 +301,8 @@ let g:lightline = {
     \ 'component': {
     \   'lineinfo': '%l\%L [%p%%], %c, %n',
     \   'tagbar': '%{tagbar#currenttag("[%s]", "", "f")}',
-    \   'gutentags': '%{gutentags#statusline("[Generating...]")}',
+    \   'ale': '%{ale#statusline#Status()}',
+    \   'gutentags': '%{gutentags#statusline("[Generating...]")}'
     \ },
     \ }
 " ==== End lightline settings ====
@@ -316,6 +335,7 @@ autocmd FileType php inoremap <Leader>pne <Esc>:call IPhpExpandClass()<CR>
 autocmd FileType php noremap <Leader>pne :call PhpExpandClass()<CR>
 autocmd FileType php inoremap <Leader>pns <Esc>:call PhpSortUse()<CR>
 autocmd FileType php noremap <Leader>pns :call PhpSortUse()<CR>
+let g:php_namespace_sort_after_insert=1
 
 " ==== End plugin settings ====
 
@@ -340,7 +360,7 @@ autocmd BufNewFile,BufRead *.xsd set ft=xml
 let g:xml_syntax_folding=1
 au FileType xml setlocal foldmethod=syntax
 
-au BufRead,BufNewFile *.twig set syntax=html
+au BufRead,BufNewFile *.twig set ft=html
 " ==== End automatic ====
 
 " ==== Custom functions ====
