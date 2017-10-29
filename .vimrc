@@ -9,13 +9,13 @@ endif
 
 call plug#begin("~/.vim/bundle")
 
-Plug 'VundleVim/Vundle.vim'
-
 Plug 'scrooloose/nerdtree'
 
 Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'FelikZ/ctrlp-py-matcher'
+
+Plug 'mileszs/ack.vim'
 
 Plug 'easymotion/vim-easymotion'
 
@@ -27,25 +27,41 @@ Plug 'airblade/vim-rooter'
 
 Plug 'vim-scripts/PreserveNoEOL'
 
+Plug 'itchyny/lightline.vim'
+
+Plug 'w0rp/ale'
+
+Plug 'tpope/vim-surround'
+
+Plug 'tpope/vim-commentary'
+
+Plug 'tpope/vim-abolish'
+
+Plug 'phb1/gtd.vim'
+
+Plug 'wellle/targets.vim'
+
+Plug 'pearofducks/ansible-vim'
+
+Plug 'ddrscott/vim-side-search'
+
+Plug 'ludovicchabant/vim-gutentags'
+
+Plug 'majutsushi/tagbar'
+
+Plug 'joonty/vdebug'
+
+Plug 'vim-php/tagbar-phpctags.vim'
+
+"Plug 'php-vim/phpcd.vim', { 'for': 'php' , 'do': 'composer update' }
+
 Plug '2072/PHP-Indenting-for-VIm'
 
 Plug '2072/vim-syntax-for-PHP'
 
-Plug 'itchyny/lightline.vim'
-
-Plug 'majutsushi/tagbar'
-
-Plug 'vim-php/tagbar-phpctags.vim'
+"Plug '~/.vim/bundle/vim-syntax-for-phtml'
 
 Plug 'arnaud-lb/vim-php-namespace'
-
-Plug 'ludovicchabant/vim-gutentags'
-
-Plug 'w0rp/ale'
-
-Plug 'php-vim/phpcd.vim', { 'for': 'php' , 'do': 'composer update' }
-
-Plug 'tpope/vim-surround'
 
 Plug 'sirver/ultisnips'
 
@@ -53,13 +69,11 @@ Plug 'sniphpets/sniphpets'
 
 Plug 'sniphpets/sniphpets-common'
 
-Plug 'pearofducks/ansible-vim'
+Plug 'sniphpets/sniphpets-symfony'
 
-Plug 'ddrscott/vim-side-search'
+Plug 'sniphpets/sniphpets-doctrine'
 
-Plug 'wellle/targets.vim'
-
-Plug '~/.vim/bundle/vim-syntax-for-phtml'
+Plug 'robertbasic/vim-snippets'
 
 Plug 'robertbasic/vim-argument-swapper'
 
@@ -67,14 +81,19 @@ Plug 'robertbasic/vim-pyqt5-importer'
 
 Plug 'robertbasic/vim-hugo-helper'
 
+Plug 'robertbasic/snipbar'
+
 Plug 'phpstan/vim-phpstan'
 
-Plug '~/projects/vim-functions'
+Plug 'sjl/badwolf'
+
+"Plug 'stephpy/vim-php-cs-fixer'
 
 call plug#end()
 
 " Enable filetype indentation
 filetype plugin indent on
+
 " Do smart autoindenting
 set smartindent
 set autoindent
@@ -123,7 +142,8 @@ set softtabstop=4
 " Syntax!
 " Turn on syntax highlightning
 syntax on
-colorscheme desert
+set termguicolors
+colorscheme badwolf
 set background=dark
 
 " Turn on command-line completion
@@ -206,6 +226,11 @@ nnoremap <expr> N 'nN'[v:searchforward]
 " set selection=old
 
 " ==== Plugins settings ====
+if executable('ag')
+    let g:ackprg = 'ag --nogroup --nocolor --column'
+endif
+cnoreabbrev Ack Ack!
+nnoremap <leader>ag :Ack!<Space>
 " ==== VIM PyQt5 Importer settings ====
 map <leader>pi :PyQt5ImportClass<cr>
 " ==== End VIM PyQt5 Importer settings ====
@@ -217,7 +242,7 @@ map <leader>as :ArgumentSwapperSwap<cr>
 " ==== NERDTree settings ====
 nnoremap <silent> <c-n> :NERDTreeToggle<CR>
 let NERDTreeMapHelp='<f1>'
-let NERDTreeIgnore = ['\.pyc$', '__init__.py', '__pycache__']
+let NERDTreeIgnore = ['\.pyc$', '__init__.py', '__pycache__', '\.php\~$']
 " ==== End NERDtree settings ====
 "
 " ==== CtrlP settings ====
@@ -264,7 +289,9 @@ let g:rooter_patterns = ['composer.json', 'Vagrantfile', '.git/']
 " ==== PreserveNoEOL settings ====
 let g:PreserveNoEOL=0
 " ==== End Preserver NoEOL settings ====
-"
+
+nnoremap <F9> :SnipBar<CR>
+
 " ==== tagbar settings ====
 " Open tagbar with F8
 nnoremap <F8> :TagbarToggle<CR>
@@ -274,20 +301,29 @@ let g:tagbar_phpctags_bin='~/.vim/phpctags'
 "
 " ==== gutentags settings ====
 " Exclude css, html, js files from generating tag files
-let g:gutentags_exclude = ['*.css', '*.html', '*.js', '*.json', '*.xml',
+let g:gutentags_ctags_exclude = ['*.css', '*.html', '*.js', '*.json', '*.xml',
                             \ '*.phar', '*.ini', '*.rst', '*.md',
-                            \ '*vendor/*/test*', '*vendor/*/Test*',
+                            \ '*vendor/*/test*',
                             \ '*vendor/*/fixture*', '*vendor/*/Fixture*',
                             \ '*var/cache*', '*var/log*']
 " Where to store tag files
 let g:gutentags_cache_dir = '~/.vim/gutentags'
+let g:gutentags_project_root = ['composer.lock']
 " ==== End gutentags settings ====
 "
 let g:ale_linters = {
-\   'php': ['php'],
+\   'php': ['phpstan'],
 \}
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 0
+let g:ale_php_phpstan_configuration = 'phpstan.neon'
+" Show cursorline for the active buffer
+" Hide cursorline for inactive buffers
+augroup ALELint
+    au!
+    au VimEnter,WinEnter,BufWinEnter * ALELint
+augroup End
+
 " ==== lightline settings ====
 let g:lightline = {
     \ 'active': {
@@ -308,8 +344,15 @@ let g:lightline = {
 " ==== End lightline settings ====
 "
 " ==== UltiSnips settings ====
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/sniphpets-common/UltiSnips', $HOME.'/.vim/bundle/sniphpets']
+let g:UltiSnipsExpandTrigger = "<tab>"
+" $HOME.'/.vim/UltiSnips' load as last
+let g:UltiSnipsSnippetDirectories = [
+    \ $HOME.'/.vim/bundle/sniphpets',
+    \ $HOME.'/.vim/bundle/sniphpets-common/UltiSnips',
+    \ $HOME.'/.vim/bundle/sniphpets-symfony/UltiSnips',
+    \ $HOME.'/.vim/bundle/vim-snippets/UltiSnips'
+    \ ]
+
 " ==== End UltiSnips settings ====
 "
 " ==== vim side search settings ====
@@ -336,6 +379,22 @@ autocmd FileType php noremap <Leader>pne :call PhpExpandClass()<CR>
 autocmd FileType php inoremap <Leader>pns <Esc>:call PhpSortUse()<CR>
 autocmd FileType php noremap <Leader>pns :call PhpSortUse()<CR>
 let g:php_namespace_sort_after_insert=1
+" ==== End vim-php-namespace settings ====
+
+" ==== vim-php-cs-fixer settings ====
+let g:php_cs_fixer_rules = "@PSR2"
+let g:php_cs_fixer_php_path = "php"
+let g:php_cs_fixer_config_file = ".php_cs"
+let g:php_cs_fixer_enable_default_mapping = 1
+let g:php_cs_fixer_dry_run = 0
+let g:php_cs_fixer_verbose = 0
+" ==== End vim-php-cs-fixer settings ====
+
+" ==== gtd.vim ====
+let g:gtd#default_context='work'
+let g:gtd#default_action='inbox'
+let g:gtd#dir= '~/notes'
+" ==== End gtd.vim ====
 
 " ==== End plugin settings ====
 
@@ -357,37 +416,16 @@ autocmd BufNewFile,BufRead *.tpl set ft=phtml
 " au FileType php setlocal formatoptions+=cro
 
 autocmd BufNewFile,BufRead *.xsd set ft=xml
-let g:xml_syntax_folding=1
-au FileType xml setlocal foldmethod=syntax
+"let g:xml_syntax_folding=0
+"au FileType xml setlocal foldmethod=syntax
 
-au BufRead,BufNewFile *.twig set ft=html
+au BufRead,BufNewFile *.twig set ft=html.twig
 " ==== End automatic ====
 
 " ==== Custom functions ====
 function! FixSyntax()
     " nmap <silent> <leader><leader>fs :syntax sync fromstart<cr>
     syntax sync fromstart
-endfun
-
-function! OpenTestFile()
-    let b:file = expand("%:p:r")
-    let b:root_dir = getbufvar('%', 'rootDir')
-    let b:tests_dir = b:root_dir . "/tests"
-    let b:test_file = substitute(b:file, b:root_dir, b:tests_dir, "") . "Test.php"
-    exe ":vsp " b:test_file
-endfun
-
-function! OpenTestMethodFile()
-    let b:file = expand("%:p:r")
-    let b:root_dir = getbufvar('%', 'rootDir')
-    let b:tests_dir = b:root_dir . "/tests"
-    let b:class_test_dir = substitute(b:file, b:root_dir, b:tests_dir, "")
-    let b:current_method = substitute(tagbar#currenttag('%s',''), '\(^.\)', '\u&', 'g')
-    if !isdirectory(b:class_test_dir)
-        call mkdir(b:class_test_dir, 'p')
-    endif
-    let b:test_file = b:class_test_dir . "/" . b:current_method . "Test.php"
-    exe ":vsp " b:test_file
 endfun
 
 function! CopyPasteMethodBody(from_line, to_line)
@@ -444,6 +482,15 @@ nnoremap <leader>otmf :call OpenTestMethodFile()<cr>
 " Highlight word under cursor
 nnoremap <silent> <Leader>* :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>
 
+" Indent with Alt-I, deindent with Alt-D, I keep fatfingering > and <
+" Have to go with alt to not mess up builtin ctrl-i and ctrl-d behaviour
+nmap <A-i> >>
+nmap <A-d> <<
+vmap <A-i> >
+vmap <A-d> <
+imap <A-i> <C-i>
+imap <A-d> <C-d>
+
 " Swap current and next variable
-nnoremap <silent> <Leader>vs 2wdw2bPa, <ESC>2wx
+"nnoremap <silent> <Leader>vs 2wdw2bPa, <ESC>2wx
 " ==== End remappings ====
