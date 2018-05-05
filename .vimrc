@@ -37,9 +37,9 @@ Plug 'tpope/vim-commentary'
 
 Plug 'tpope/vim-abolish'
 
-Plug 'phb1/gtd.vim'
-
 Plug 'wellle/targets.vim'
+
+Plug 'fatih/vim-go'
 
 Plug 'pearofducks/ansible-vim'
 
@@ -84,10 +84,6 @@ Plug 'robertbasic/vim-hugo-helper'
 Plug 'robertbasic/snipbar'
 
 Plug 'phpstan/vim-phpstan'
-
-Plug 'sjl/badwolf'
-
-"Plug 'stephpy/vim-php-cs-fixer'
 
 call plug#end()
 
@@ -143,7 +139,7 @@ set softtabstop=4
 " Turn on syntax highlightning
 syntax on
 set termguicolors
-colorscheme badwolf
+colorscheme desert
 set background=dark
 
 " Turn on command-line completion
@@ -210,6 +206,9 @@ set incsearch
 " Highlight search results
 set hlsearch
 
+" Let the tag search be smart as well
+set tagcase=smart
+
 " Normal, non-recursive map
 " Clear the search buffer
 nnoremap <leader>, :noh<cr>
@@ -231,6 +230,7 @@ if executable('ag')
 endif
 cnoreabbrev Ack Ack!
 nnoremap <leader>ag :Ack!<Space>
+"
 " ==== VIM PyQt5 Importer settings ====
 map <leader>pi :PyQt5ImportClass<cr>
 " ==== End VIM PyQt5 Importer settings ====
@@ -323,6 +323,8 @@ augroup ALELint
     au!
     au VimEnter,WinEnter,BufWinEnter * ALELint
 augroup End
+nmap <silent> <leader>ap :ALEPreviousWrap<cr>
+nmap <silent> <leader>an :ALENextWrap<cr>
 
 " ==== lightline settings ====
 let g:lightline = {
@@ -381,21 +383,6 @@ autocmd FileType php noremap <Leader>pns :call PhpSortUse()<CR>
 let g:php_namespace_sort_after_insert=1
 " ==== End vim-php-namespace settings ====
 
-" ==== vim-php-cs-fixer settings ====
-let g:php_cs_fixer_rules = "@PSR2"
-let g:php_cs_fixer_php_path = "php"
-let g:php_cs_fixer_config_file = ".php_cs"
-let g:php_cs_fixer_enable_default_mapping = 1
-let g:php_cs_fixer_dry_run = 0
-let g:php_cs_fixer_verbose = 0
-" ==== End vim-php-cs-fixer settings ====
-
-" ==== gtd.vim ====
-let g:gtd#default_context='work'
-let g:gtd#default_action='inbox'
-let g:gtd#dir= '~/notes'
-" ==== End gtd.vim ====
-
 " ==== End plugin settings ====
 
 " ==== Automatic ====
@@ -428,6 +415,27 @@ function! FixSyntax()
     syntax sync fromstart
 endfun
 
+function! OpenTestFile()
+    let b:file = expand("%:p:r")
+    let b:root_dir = getbufvar('%', 'rootDir')
+    let b:tests_dir = b:root_dir . "/tests"
+    let b:test_file = substitute(b:file, b:root_dir, b:tests_dir, "") . "Test.php"
+    exe ":vsp " b:test_file
+endfun
+
+function! OpenTestMethodFile()
+    let b:file = expand("%:p:r")
+    let b:root_dir = getbufvar('%', 'rootDir')
+    let b:tests_dir = b:root_dir . "/tests"
+    let b:class_test_dir = substitute(b:file, b:root_dir, b:tests_dir, "")
+    let b:current_method = substitute(tagbar#currenttag('%s',''), '\(^.\)', '\u&', 'g')
+    if !isdirectory(b:class_test_dir)
+        call mkdir(b:class_test_dir, 'p')
+    endif
+    let b:test_file = b:class_test_dir . "/" . b:current_method . "Test.php"
+    exe ":vsp " b:test_file
+endfun
+
 function! CopyPasteMethodBody(from_line, to_line)
     execute a:from_line
     normal! yiB
@@ -453,6 +461,24 @@ function! CreateNamespace()
     let b:namespace = substitute(b:namespace, '\\', '', '')
     exe "normal! Inamespace " . b:namespace . ";"
 endfun
+
+function! RenameAreaToIndustry()
+    exe "%s/Areas/Industries/g"
+    exe "%s/areas/industries/g"
+    exe "%s/Area/Industry/g"
+    exe "%s/area/industry/g"
+endfun
+
+"function! CreatePHPClass(name)
+"    let b:root_dir = getbufvar('%', 'rootDir')
+"    let b:file_path = b:root_dir . "/src/" . a:name . ".php"
+"    let b:last_slash = strridx(a:name, '/')
+"    let b:class_name = strcharpart(a:name, b:last_slash + 1)
+"    let b:namespace = strcharpart(substitute(a:name, '/', '\\', 'g'), 0, b:last_slash)
+"    let l:lines = ['<?php', 'declare(strict_types=1);', '', 'namespace ' . b:namespace . ';', '', 'class ' . b:class_name, '{', '}']
+"    call writefile(l:lines, b:file_path)
+"    exe "e " . b:file_path
+"endfun
 
 " ==== End custom functions ====
 
@@ -493,4 +519,6 @@ imap <A-d> <C-d>
 
 " Swap current and next variable
 "nnoremap <silent> <Leader>vs 2wdw2bPa, <ESC>2wx
+
+inoremap <C-c> ::class<Esc>3b :call PhpInsertUse()<CR>
 " ==== End remappings ====
